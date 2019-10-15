@@ -46,6 +46,19 @@ function unitarydecomposition(N) #N = n1.coeff*n1.unit+n2.coeff*n2.unit
     N = N / nfactor
     F = svd(N)
     D = Diagonal(F.S) + im*sqrt.(I-Diagonal((F.S).^2))
-    println(D*D')
     return unidecomp(0.5*nfactor,F.U*D*F.Vt),unidecomp(0.5*nfactor,F.U*conj(D)*F.Vt)
+end
+
+function lcu(ntot,top,mid,bot,N)
+    ua,ub = unitarydecomposition(N)
+    chain(
+    ntot,
+    put(ntot, (top=>H)),
+    put(ntot, (top=>X)),
+    control(ntot,top,(mid,bot)=>matblock(ua.unit)),
+    put(ntot, (top=>X)),
+    control(ntot,top,(mid,bot)=>matblock(ub.unit)),
+    put(ntot, (top=>H)),
+    put(ntot,(top=>ConstGate.P0))
+    )
 end
