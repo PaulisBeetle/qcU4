@@ -44,6 +44,7 @@ end
     Σ = Diagonal(ComplexF64[1.0, 0])
     reg = grover_nonunitary(2, (1,)=>Σ; k=1, ϵ = π/4)
     @test all(measure(reg, 2, nshots=10) .== 1)
+    @test all(measure(reg, 1, nshots=10) .== 0)
 end
 
 # k =1
